@@ -21,4 +21,8 @@ urlpatterns = [
     path('signUp/', views.SignUp),
     path('emailCheck/', views.email_check),
     path('signIn/', views.SignIn),
+    path('toPost/', views.toPost),
+    path('Posts/', views.Posts),
+    path('PostInfo/', views.list_message),
+    path('comment/', views.speak),
 ]
