@@ -34,7 +34,7 @@
 
 ## 4.发帖：
 **api**:  url+toPost<br>
-**param**: content(评论的内容),label(吐槽的标签）,isAnonymity<br>
+**param**:userid content(评论的内容),label(吐槽的标签）,isAnonymity<br>
 **return**:<br>
 {<br>
 **'isOk'**:true<br>
