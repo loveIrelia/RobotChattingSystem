@@ -6,6 +6,7 @@ class user_info(models.Model):
     username = models.CharField(max_length=30)
     password = models.CharField(max_length=10)
     email = models.CharField(max_length=50)
+    briefInfo = models.CharField(max_length=100, null=True)
 
 class message(models.Model):
     # 帖子id为自增主键，django自动创建(key为id)

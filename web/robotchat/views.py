@@ -1,9 +1,7 @@
 # Create your views here.
-from django.shortcuts import render
 from django.http import HttpResponse
 import random
 import json
-from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt
 from robotchat.models import user_info, message, comment, preference
 from django.core.mail import send_mail
@@ -132,7 +130,7 @@ def list_message(request):
                     tmp_name = '匿名{name}'.format(name=count)
                     count += 1
                     com_list[tmp_name] = i.content
-            resData['coments'] = com_list
+            resData['comments'] = com_list
             resData['isOK'] = True
         else:
             resData['errmsg'] = '找不到该帖子！'
@@ -153,5 +151,66 @@ def speak(request):
         # resData['usr_id']=user_info.objects.get(id=1).id
         # resData['id']=comment.objects.get(id=1)
         comment.objects.create(content=comt, anonymous=isAnonymity, message_id=message.objects.get(id=int(pk)), user_id=user_info.objects.get(id=int(user_id)))
+        jsonData = json.dumps(resData)
+        return HttpResponse(jsonData, content_type="application/json")
+
+@csrf_exempt
+def getinfo(request):
+    resData = {'isOk': False, 'errmsg': '未知错误'}
+    if request.method =='POST':
+        user_id = request.POST.get('user_id')
+        res = user_info.objects.filter(id=int(user_id))
+        if res:
+            resData['isOk'] = True
+            resData['isOk'] = True
+            resData['name'] = res[0].username
+            resData['briefInfo'] = res[0].briefInfo
+        else:
+            resData['errmsg'] = '获取信息失败！'
+        jsonData = json.dumps(resData)
+        return HttpResponse(jsonData, content_type="application/json")
+
+@csrf_exempt
+def modifyInfo(request):
+    resData = {'isOk': False, 'errmsg': '未知错误'}
+    if request.method =='POST':
+        user_id = request.POST.get('user_id')
+        name = request.POST.get('name')
+        briefInfo = request.POST.get('briefInfo')
+        has_name = user_info.objects.filter(username=name)
+        # 判断用户名是否已经存在
+        if has_name:
+            resData['errmsg'] = '用户名已经存在!'
+        else:
+            res = user_info.objects.filter(id=int(user_id))
+            if res:
+                resData['isOk'] = True
+                user_info.objects.filter(id=int(user_id)).update(username=name, briefInfo=briefInfo)
+            else:
+                resData['errmsg'] = '修改失败!'
+        jsonData = json.dumps(resData)
+        return HttpResponse(jsonData, content_type="application/json")
+
+@csrf_exempt
+def like(request):
+    resData = {'isOk': False, 'errmsg': '未知错误'}
+
+    if request.method=='POST':
+        pk = request.POST.get("pk") # 帖子id
+        user_id = request.POST.get("user_id") # 评论人的id
+        islike = request.POST.get("like_dislke")
+        resData['isOk'] = True
+        message_id_object = message.objects.get(id=int(pk))
+        user_id_object = user_info.objects.get(id=int(user_id))
+        if(int(islike)==1):#修改message点踩数
+            message_id_object.like = message_id_object.like+1
+            message.objects.filter(id=int(pk)).update(like=message_id_object.like)
+        else:
+            message_id_object.dislike = message_id_object.dislike+1
+            message.objects.filter(id=int(pk)).update(dislike=message_id_object.dislike)
+        ##像偏好表增加记录
+        preference.objects.create(user_id=user_id_object, message_id=message_id_object, like_dislike=bool(islike))
+        resData['like'] = message_id_object.like
+        resData['dislike'] = message_id_object.dislike
         jsonData = json.dumps(resData)
         return HttpResponse(jsonData, content_type="application/json")

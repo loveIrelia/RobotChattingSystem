@@ -25,4 +25,8 @@ urlpatterns = [
     path('Posts/', views.Posts),
     path('PostInfo/', views.list_message),
     path('comment/', views.speak),
+    path('getInfo/', views.getinfo),
+    path('modifyInfo/', views.modifyInfo),
+    path('like/',views.like)
+
 ]
