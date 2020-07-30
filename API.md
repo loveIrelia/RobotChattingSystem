@@ -78,8 +78,36 @@
 **'errmsg'**:'未知错误'<br>
 }
 
+## 8.点赞/点👎
+**api** url+like<br>
+**param**:user_id,pk,1(like)/0(dislike)<br>
+**return**:<br>
+{<br>
+**'isOk'**:true<br>
+**'errmsg'**:'未知错误'<br>
+**'like'**:(该树洞的点赞数）<br>
+**'dislike'**:(该树洞的点踩数)<br>
+}
 
+## 9.修改用户信息
+**api** url+modifyInfo<br>
+**param**:user_id,name,briefInfo(个人简介)
+**return**:<br>
+{<br>
+**'isOk'**:true<br>
+**'errmsg'**:'未知错误'<br>
+}
 
+## 10.获取用户信息
+**api**:url+getInfo<br>
+**param**:user_id
+**return**:<br>
+{<br>
+**isOk**:true<br>
+**'errmsg'**:'未知错误'<br>
+**'name'**:<br>
+**'briefInfo'**:<br>
+}
 
 
 
